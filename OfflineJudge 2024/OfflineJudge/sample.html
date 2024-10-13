@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <link rel='stylesheet' href='monokai-sublime.min.css'>
+    <link rel='stylesheet' href='styles.css'>
+    <script src='highlight.min.js'></script>
+    <script src='java.min.js'></script>
+    <title>$1</title>
+</head>
+<body>
+    <ul class='responsive-table'>
+        <div class='row-container'>
+            <li class='table-row'>
+                <div class='col-1'>Student Name</div>
+                <div class='col-2'>$2</div>
+            </li>
+            <li class='table-row'>
+                <div class='col-1'>Student ID</div>
+                <div class='col-2'>$3</div>
+            </li>
+        </div>
+        <div class='row-container'>
+            <li class='table-row'>
+                <div class='col-1'>Computer Name</div>
+                <div class='col-2'>$4</div>
+            </li>
+            <li class='table-row'>
+                <div class='col-1'>MAC Address</div>
+                <div class='col-2'>$5</div>
+            </li>
+        </div>
+        <div class='row-container'>
+            <li class='table-row'>
+                <div class='col-1'>Result</div>
+                <div class='col-2 score'>$6</div>
+            </li>
+            <li class='table-row'>
+                <div class='col-1'>Judged at</div>
+                <div class='col-2'>$7</div>
+            </li>
+        </div>
+    </ul>
+    <h3 style='text-align: center;'>Code</h3>
+    <pre><code class='language-java'>
+$8
+    </code></pre>
+    <h3 style='text-align: center;'>Screenshot</h3>
+    <img src='$1.png' alt='$1' width='100%' height='auto'>
+    <h3 style='text-align: center;'>Result Detail</h3>
+    <div class='result-detail' style='height: $9px;'>
+        <result-detail>
+    </div>
+    <script>
+        hljs.highlightAll();
+    </script>
+</body>
+</html>
