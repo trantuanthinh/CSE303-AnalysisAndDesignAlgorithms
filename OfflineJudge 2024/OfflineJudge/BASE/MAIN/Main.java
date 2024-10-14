@@ -1,53 +1,142 @@
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collections;
+import java.util.Hashtable;
 import java.util.InputMismatchException;
+import java.util.LinkedList;
 
 class  Main {
     static InputReader reader;
 
-    static int maxSubarraySum(int[] arr) {
-        int maxEndingHere = arr[0];
-        int maxSoFar = arr[0];
+    private static long calculateHappiness(Hashtable<Integer, Integer> numbers) {
+        long happiness = 0;
 
-        for (int i = 1; i < arr.length; i++) {
-            maxEndingHere = Math.max(arr[i], maxEndingHere + arr[i]);
-            maxSoFar = Math.max(maxSoFar, maxEndingHere);
+        LinkedList<Integer> numbersList = new LinkedList<>(numbers.keySet());
+        Collections.sort(numbersList);
+        int currentIndex = 0;
+        int nextIndex = 1;
+        // System.out.println(numbers.size());
+        // System.out.println(numbersList.size());
+        while (!numbersList.isEmpty()) {
+            // System.out.println("currentIndex: " + currentIndex + " nextIndex: " +
+            // nextIndex);
+            if (currentIndex == numbersList.size() - 1 && numbers.size() > 1) {
+                nextIndex = 0;
+            } else if (numbers.size() == 1) {
+                break;
+            }
+            // System.out.println(
+            // "currentValue: " + numbersList.get(currentIndex) + " nextValue: " +
+            // numbersList.get(nextIndex));
+            if (numbers.size() == 1) {
+                break;
+            }
+
+            if (numbersList.get(nextIndex) > numbersList.get(currentIndex)) {
+                happiness++;
+                numbers.put(numbersList.get(currentIndex), numbers.get(numbersList.get(currentIndex)) - 1);
+                if (numbers.get(numbersList.get(currentIndex)) == 0) {
+                    numbers.remove(numbersList.get(currentIndex));
+                    numbersList.remove(currentIndex);
+                    currentIndex = nextIndex - 1;
+                    nextIndex = currentIndex + 1;
+                } else {
+                    currentIndex = nextIndex;
+                    nextIndex = currentIndex + 1;
+                }
+            } else {
+                numbers.put(numbersList.get(currentIndex), numbers.get(numbersList.get(currentIndex)) - 1);
+                if (numbers.get(numbersList.get(currentIndex)) == 0) {
+                    numbers.remove(numbersList.get(currentIndex));
+                    numbersList.remove(currentIndex);
+                    currentIndex = nextIndex - 1;
+                    nextIndex = currentIndex + 1;
+                }
+                currentIndex = nextIndex;
+                nextIndex = currentIndex + 1;
+            }
+
         }
+        return happiness;
 
-        return maxSoFar;
-    }
-
-    static int minSubarraySum(int[] arr) {
-        int minEndingHere = arr[0];
-        int minSoFar = arr[0];
-
-        for (int i = 1; i < arr.length; i++) {
-            minEndingHere = Math.min(arr[i], minEndingHere + arr[i]);
-            minSoFar = Math.min(minSoFar, minEndingHere);
-        }
-
-        return minSoFar;
-    }
-
-    static int maxAbsoluteSubarraySum(int[] arr) {
-        int maxSum = maxSubarraySum(arr);
-        int minSum = minSubarraySum(arr);
-
-        return Math.max(Math.abs(maxSum), Math.abs(minSum));
     }
 
     public static void main(String[] args) throws IOException {
         reader = new InputReader(System.in);
         int n = reader.nextInt();
-        int[] arr = new int[n];
-        for (int i = 0; i < arr.length; i++) {
-            arr[i] = reader.nextInt();
-        }
-        System.out.println(maxAbsoluteSubarraySum(arr));
-    }
+        Hashtable<Integer, Integer> numbers = new Hashtable<>();
 
-    // InputReader class for reading input
+        for (int i = 0; i < n; i++) {
+            int num = reader.nextInt();
+            numbers.put(num, numbers.getOrDefault(num, 0) + 1);
+        }
+        long happiness = calculateHappiness(numbers);
+        System.out.println(happiness);
+    }
+    // private static long calculateHappiness(LinkedList<Integer> numbers) {
+    // long happiness = 0;
+    // int currentIndex = 0;
+    // int nextIndex = 1;
+    // boolean isRestart = false;
+
+    // if (numbers.get(0) - numbers.get(numbers.size() - 1) == 0) {
+    // return 0;
+    // }
+
+    // while (!numbers.isEmpty()) {
+    // if (numbers.get(currentIndex) < numbers.get(nextIndex)) {
+    // happiness++;
+    // numbers.remove(currentIndex);
+    // currentIndex = nextIndex - 1;
+    // nextIndex -= 1;
+    // } else if (numbers.get(currentIndex) > numbers.get(nextIndex) && isRestart) {
+    // numbers.remove(currentIndex);
+    // currentIndex = nextIndex;
+    // isRestart = false;
+    // }
+    // nextIndex += 1;
+
+    // if (numbers.size() == 1) {
+    // break;
+    // }
+    // if (nextIndex == numbers.size() - 1 && !numbers.isEmpty()) {
+    // if (numbers.get(currentIndex) < numbers.get(nextIndex)) {
+    // happiness++;
+    // numbers.remove(currentIndex);
+    // currentIndex = nextIndex - 1;
+    // nextIndex -= 1;
+    // if (numbers.size() == 1) {
+    // break;
+    // }
+    // }
+    // if ((numbers.get(0) - numbers.get(numbers.size() - 1)) == 0) {
+    // break;
+    // }
+    // nextIndex = 0;
+    // isRestart = true;
+    // }
+    // }
+
+    // return happiness;
+    // }
+
+    // public static void main(String[] args) throws IOException {
+    // reader = new InputReader(System.in);
+    // int n = reader.nextInt();
+    // LinkedList<Integer> numbers = new LinkedList<>();
+
+    // for (int i = 0; i < n; i++) {
+    // int num = reader.nextInt();
+    // numbers.add(num);
+    // }
+
+    // Collections.sort(numbers);
+
+    // long happiness = calculateHappiness(numbers);
+    // System.out.println(happiness);
+    // }
+
     static public class InputReader {
         private byte[] inbuf = new byte[2 << 23];
         public int lenbuf = 0, ptrbuf = 0;
