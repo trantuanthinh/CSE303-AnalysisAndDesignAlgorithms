@@ -81,8 +81,7 @@ public class EIMIN {
         public String next() {
             int b = skip();
             StringBuilder sb = new StringBuilder();
-            while (!(isSpaceChar(b))) { // when nextLine, (isSpaceChar(b) && b
-                                        // != ' ')
+            while (!(isSpaceChar(b))) { // when nextLine, (isSpaceChar(b) && b // != ' ')
                 sb.appendCodePoint(b);
                 b = readByte();
             }
