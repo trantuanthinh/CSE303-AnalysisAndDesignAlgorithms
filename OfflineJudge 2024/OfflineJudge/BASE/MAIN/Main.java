@@ -1,141 +1,46 @@
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Hashtable;
 import java.util.InputMismatchException;
-import java.util.LinkedList;
+import java.util.List;
 
+// 33.33
 class  Main {
     static InputReader reader;
 
-    private static long calculateHappiness(Hashtable<Integer, Integer> numbers) {
-        long happiness = 0;
-
-        LinkedList<Integer> numbersList = new LinkedList<>(numbers.keySet());
-        Collections.sort(numbersList);
-        int currentIndex = 0;
-        int nextIndex = 1;
-        // System.out.println(numbers.size());
-        // System.out.println(numbersList.size());
-        while (!numbersList.isEmpty()) {
-            // System.out.println("currentIndex: " + currentIndex + " nextIndex: " +
-            // nextIndex);
-            if (currentIndex == numbersList.size() - 1 && numbers.size() > 1) {
-                nextIndex = 0;
-            } else if (numbers.size() == 1) {
-                break;
-            }
-            // System.out.println(
-            // "currentValue: " + numbersList.get(currentIndex) + " nextValue: " +
-            // numbersList.get(nextIndex));
-            if (numbers.size() == 1) {
-                break;
-            }
-
-            if (numbersList.get(nextIndex) > numbersList.get(currentIndex)) {
-                happiness++;
-                numbers.put(numbersList.get(currentIndex), numbers.get(numbersList.get(currentIndex)) - 1);
-                if (numbers.get(numbersList.get(currentIndex)) == 0) {
-                    numbers.remove(numbersList.get(currentIndex));
-                    numbersList.remove(currentIndex);
-                    currentIndex = nextIndex - 1;
-                    nextIndex = currentIndex + 1;
-                } else {
-                    currentIndex = nextIndex;
-                    nextIndex = currentIndex + 1;
-                }
-            } else {
-                numbers.put(numbersList.get(currentIndex), numbers.get(numbersList.get(currentIndex)) - 1);
-                if (numbers.get(numbersList.get(currentIndex)) == 0) {
-                    numbers.remove(numbersList.get(currentIndex));
-                    numbersList.remove(currentIndex);
-                    currentIndex = nextIndex - 1;
-                    nextIndex = currentIndex + 1;
-                }
-                currentIndex = nextIndex;
-                nextIndex = currentIndex + 1;
-            }
-
-        }
-        return happiness;
-
-    }
-
     public static void main(String[] args) throws IOException {
         reader = new InputReader(System.in);
+        StringBuilder sb = new StringBuilder();
         int n = reader.nextInt();
-        Hashtable<Integer, Integer> numbers = new Hashtable<>();
+        List<Integer> numbers = new ArrayList<>();
 
         for (int i = 0; i < n; i++) {
             int num = reader.nextInt();
-            numbers.put(num, numbers.getOrDefault(num, 0) + 1);
+            numbers.add(num);
         }
-        long happiness = calculateHappiness(numbers);
-        System.out.println(happiness);
+
+        Collections.reverse(numbers);
+
+        List<String> res = new ArrayList<>();
+        res.add(String.valueOf(numbers.get(0)));
+
+        for (int i = 1; i < numbers.size(); i++) {
+            res.add(String.valueOf(numbers.get(i)));
+            var temp = res.size() - 1;
+            for (int j = 0; j < temp; j++) {
+                res.add(numbers.get(i) + " " + res.get(j));
+            }
+        }
+
+        sb.append(res.size()).append("\n");
+        for (String string : res) {
+            sb.append(string).append("\n");
+        }
+
+        System.out.println(sb);
     }
-    // private static long calculateHappiness(LinkedList<Integer> numbers) {
-    // long happiness = 0;
-    // int currentIndex = 0;
-    // int nextIndex = 1;
-    // boolean isRestart = false;
-
-    // if (numbers.get(0) - numbers.get(numbers.size() - 1) == 0) {
-    // return 0;
-    // }
-
-    // while (!numbers.isEmpty()) {
-    // if (numbers.get(currentIndex) < numbers.get(nextIndex)) {
-    // happiness++;
-    // numbers.remove(currentIndex);
-    // currentIndex = nextIndex - 1;
-    // nextIndex -= 1;
-    // } else if (numbers.get(currentIndex) > numbers.get(nextIndex) && isRestart) {
-    // numbers.remove(currentIndex);
-    // currentIndex = nextIndex;
-    // isRestart = false;
-    // }
-    // nextIndex += 1;
-
-    // if (numbers.size() == 1) {
-    // break;
-    // }
-    // if (nextIndex == numbers.size() - 1 && !numbers.isEmpty()) {
-    // if (numbers.get(currentIndex) < numbers.get(nextIndex)) {
-    // happiness++;
-    // numbers.remove(currentIndex);
-    // currentIndex = nextIndex - 1;
-    // nextIndex -= 1;
-    // if (numbers.size() == 1) {
-    // break;
-    // }
-    // }
-    // if ((numbers.get(0) - numbers.get(numbers.size() - 1)) == 0) {
-    // break;
-    // }
-    // nextIndex = 0;
-    // isRestart = true;
-    // }
-    // }
-
-    // return happiness;
-    // }
-
-    // public static void main(String[] args) throws IOException {
-    // reader = new InputReader(System.in);
-    // int n = reader.nextInt();
-    // LinkedList<Integer> numbers = new LinkedList<>();
-
-    // for (int i = 0; i < n; i++) {
-    // int num = reader.nextInt();
-    // numbers.add(num);
-    // }
-
-    // Collections.sort(numbers);
-
-    // long happiness = calculateHappiness(numbers);
-    // System.out.println(happiness);
-    // }
 
     static public class InputReader {
         private byte[] inbuf = new byte[2 << 23];
@@ -179,8 +84,7 @@ class  Main {
         public String next() {
             int b = skip();
             StringBuilder sb = new StringBuilder();
-            while (!(isSpaceChar(b))) { // when nextLine, (isSpaceChar(b) && b
-                                        // != ' ')
+            while (!(isSpaceChar(b))) { // when nextLine, (isSpaceChar(b) && b // != ' ')
                 sb.appendCodePoint(b);
                 b = readByte();
             }

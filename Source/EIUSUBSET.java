@@ -2,6 +2,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.InputMismatchException;
 import java.util.List;
 
@@ -20,9 +21,7 @@ public class EIUSUBSET {
             numbers.add(num);
         }
 
-        numbers.sort((s1, s2) -> {
-            return s2 - s1;
-        });
+        Collections.reverse(numbers);
 
         List<String> res = new ArrayList<>();
         res.add(String.valueOf(numbers.get(0)));
