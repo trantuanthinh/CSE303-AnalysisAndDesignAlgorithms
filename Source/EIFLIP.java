@@ -3,18 +3,63 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.InputMismatchException;
 
+// 100 done
 public class EIFLIP {
     static InputReader reader;
     static StringBuilder sb = new StringBuilder();
 
     static int countStep(boolean[][] board) {
-
-        return 0;
+        int minCount = Integer.MAX_VALUE;
+        for (int i = 1; i <= 512; i++) {
+            boolean[][] tempBoard = new boolean[3][3];
+            int count = 0;
+            for (int j = 0; j < 9; j++) {
+                if ((i & (1 << j)) > 0) {
+                    tempBoard = click(tempBoard, j);
+                    count++;
+                }
+            }
+            if (compareMatrix(board, tempBoard)) {
+                minCount = Math.min(minCount, count);
+            }
+        }
+        return minCount;
     }
 
-    static boolean[][] click(boolean[][] board, int position) {
+    static boolean compareMatrix(boolean[][] board1, boolean[][] board2) {
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                if (board1[i][j] != board2[i][j]) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 
-        return board;
+    static boolean[][] click(boolean[][] clickBoard, int position) { // board 3x3, position 0->8
+        int row = position / 3;
+        int col = position % 3;
+        if (col == 0 || col == 2) {
+            col = Math.abs(col - 2);
+        }
+
+        clickBoard[row][col] = !clickBoard[row][col];
+
+        if (row == 0 || row == 2) {
+            clickBoard[1][col] = !clickBoard[1][col];
+        } else {
+            clickBoard[0][col] = !clickBoard[0][col];
+            clickBoard[2][col] = !clickBoard[2][col];
+        }
+
+        if (col == 0 || col == 2) {
+            clickBoard[row][1] = !clickBoard[row][1];
+        } else {
+            clickBoard[row][0] = !clickBoard[row][0];
+            clickBoard[row][2] = !clickBoard[row][2];
+        }
+        return clickBoard;
     }
 
     public static void main(String[] args) throws IOException {
