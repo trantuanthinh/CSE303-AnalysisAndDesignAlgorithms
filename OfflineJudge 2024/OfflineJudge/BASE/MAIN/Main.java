@@ -2,44 +2,72 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Hashtable;
 import java.util.InputMismatchException;
 import java.util.List;
 
-// 33.33
+// 85
 class  Main {
     static InputReader reader;
 
+    public static boolean canPermutate(Hashtable<Integer, Integer> tableA, Hashtable<Integer, Integer> tableB, int k) {
+        List<Integer> listA = new ArrayList<>(tableA.keySet());
+        List<Integer> listB = new ArrayList<>(tableB.keySet());
+        if (listA.isEmpty() && listB.isEmpty()) {
+            return true;
+        }
+        for (int i = 0; i < listA.size(); i++) {
+            for (int j = 0; j < listB.size(); j++) {
+                int each = listA.get(i);
+                int key = listB.get(j);
+                int different = Math.abs(each - key);
+                if (different <= k) {
+                    k -= different;
+                    int countA = tableA.get(each);
+                    int countB = tableB.get(key);
+                    tableA.put(each, countA - 1);
+                    tableB.put(key, countB - 1);
+                    if (tableA.get(each) == 0) {
+                        tableA.remove(each);
+                    }
+                    if (tableB.get(key) == 0) {
+                        tableB.remove(key);
+                    }
+                    return tableA.isEmpty() && tableB.isEmpty();
+                }
+            }
+        }
+        return false;
+    }
+
     public static void main(String[] args) throws IOException {
         reader = new InputReader(System.in);
-        StringBuilder sb = new StringBuilder();
         int n = reader.nextInt();
-        List<Integer> numbers = new ArrayList<>();
+        int k = reader.nextInt();
+        Hashtable<Integer, Integer> tableA = new Hashtable<>();
+        Hashtable<Integer, Integer> tableB = new Hashtable<>();
+        for (int i = 0; i < n; i++) {
+            int num = reader.nextInt();
+            tableA.put(num, tableA.getOrDefault(num, 0) + 1);
+        }
 
         for (int i = 0; i < n; i++) {
             int num = reader.nextInt();
-            numbers.add(num);
-        }
-
-        Collections.reverse(numbers);
-
-        List<String> res = new ArrayList<>();
-        res.add(String.valueOf(numbers.get(0)));
-
-        for (int i = 1; i < numbers.size(); i++) {
-            res.add(String.valueOf(numbers.get(i)));
-            var temp = res.size() - 1;
-            for (int j = 0; j < temp; j++) {
-                res.add(numbers.get(i) + " " + res.get(j));
+            if (tableA.containsKey(num)) {
+                tableA.put(num, tableA.get(num) - 1);
+                if (tableA.get(num) == 0) {
+                    tableA.remove(num);
+                }
+            } else {
+                tableB.put(num, tableB.getOrDefault(num, 0) + 1);
             }
         }
 
-        sb.append(res.size()).append("\n");
-        for (String string : res) {
-            sb.append(string).append("\n");
+        if (canPermutate(tableA, tableB, k)) {
+            System.out.println("YES");
+        } else {
+            System.out.println("NO");
         }
-
-        System.out.println(sb);
     }
 
     static public class InputReader {

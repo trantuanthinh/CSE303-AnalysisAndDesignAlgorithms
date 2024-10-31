@@ -1,73 +1,40 @@
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.InputMismatchException;
-import java.util.List;
 
-// 100 done
-public class EIEQUALS {
+public class EIFLIP {
     static InputReader reader;
+    static StringBuilder sb = new StringBuilder();
 
-    public static boolean canPermutate(Hashtable<Integer, Integer> tableA, Hashtable<Integer, Integer> tableB, int k) {
-        List<Integer> listA = new ArrayList<>(tableA.keySet());
-        List<Integer> listB = new ArrayList<>(tableB.keySet());
-        if (listA.isEmpty() && listB.isEmpty()) {
-            return true;
-        }
-        for (int i = 0; i < listA.size(); i++) {
-            for (int j = 0; j < listB.size(); j++) {
-                int each = listA.get(i);
-                int key = listB.get(j);
-                int different = Math.abs(each - key);
-                if (different <= k) {
-                    k -= different;
-                    int countA = tableA.get(each);
-                    int countB = tableB.get(key);
-                    tableA.put(each, countA - 1);
-                    tableB.put(key, countB - 1);
-                    if (tableA.get(each) == 0) {
-                        tableA.remove(each);
-                    }
-                    if (tableB.get(key) == 0) {
-                        tableB.remove(key);
-                    }
-                    return tableA.isEmpty() && tableB.isEmpty();
-                }
-            }
-        }
-        return false;
+    static int countStep(boolean[][] board) {
+
+        return 0;
+    }
+
+    static boolean[][] click(boolean[][] board, int position) {
+
+        return board;
     }
 
     public static void main(String[] args) throws IOException {
         reader = new InputReader(System.in);
-        int n = reader.nextInt();
-        int k = reader.nextInt();
-        Hashtable<Integer, Integer> tableA = new Hashtable<>();
-        Hashtable<Integer, Integer> tableB = new Hashtable<>();
-        for (int i = 0; i < n; i++) {
-            int num = reader.nextInt();
-            tableA.put(num, tableA.getOrDefault(num, 0) + 1);
-        }
-
-        for (int i = 0; i < n; i++) {
-            int num = reader.nextInt();
-            if (tableA.containsKey(num)) {
-                tableA.put(num, tableA.get(num) - 1);
-                if (tableA.get(num) == 0) {
-                    tableA.remove(num);
+        int numberOfTestcases = reader.nextInt();
+        for (int i = 0; i < numberOfTestcases; i++) {
+            boolean[][] board = new boolean[3][3];
+            for (int j = 0; j < 3; j++) {
+                String each = reader.nextLine();
+                for (int k = 0; k < 3; k++) {
+                    char eachChar = each.charAt(k);
+                    if (eachChar == '*') {
+                        board[j][k] = true;
+                    }
                 }
-            } else {
-                tableB.put(num, tableB.getOrDefault(num, 0) + 1);
             }
+            int count = countStep(board);
+            sb.append(count).append("\n");
         }
-
-        if (canPermutate(tableA, tableB, k)) {
-            System.out.println("YES");
-        } else {
-            System.out.println("NO");
-        }
+        System.out.println(sb);
     }
 
     static public class InputReader {

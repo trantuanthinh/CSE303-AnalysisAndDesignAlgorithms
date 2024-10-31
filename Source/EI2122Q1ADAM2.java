@@ -39,10 +39,13 @@ public class EI2122Q1ADAM2 {
 
     static int binarySearch(List<Integer> men, List<Integer> women, int pairs) {
         int left = 0;
-        int right = Math.max(men.get(men.size() - 1), women.get(women.size() - 1));
+        int diff1 = men.get(men.size() - 1) - women.get(0);
+        int diff2 = women.get(women.size() - 1) - men.get(0);
+        int right = Math.max(diff1, diff2);
+
         int result = right;
         while (left <= right) {
-            int mid = left + (right - left) / 2;
+            int mid = (left + right) / 2;
             if (canFormPairs(men, women, pairs, mid)) {
                 result = mid;
                 right = mid - 1;
