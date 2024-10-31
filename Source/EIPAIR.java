@@ -1,36 +1,40 @@
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.InputMismatchException;
-import java.util.List;
 
 // 100 done
-public class EIPAINTING {
+public class EIPAIR {
     static InputReader reader;
-
-    private static int calculateHappiness(int n, Hashtable<Integer, Integer> numbers) {
-        int happiness = 0;
-        List<Integer> list = new ArrayList<>(numbers.values());
-        list.sort((p1, p2) -> {
-            return p2 - p1;
-        });
-        happiness = n - list.get(0);
-        return happiness;
-    }
+    static StringBuilder stringBuilder = new StringBuilder();
 
     public static void main(String[] args) throws IOException {
         reader = new InputReader(System.in);
-        int n = reader.nextInt();
-        Hashtable<Integer, Integer> numbers = new Hashtable<>();
+        var quantityOfTestCase = reader.nextInt();
+        for (int i = 0; i < quantityOfTestCase; i++) {
+            var quantityOfItem = reader.nextInt();
+            Hashtable<Integer, Integer> table = new Hashtable<>();
 
-        for (int i = 0; i < n; i++) {
-            int num = reader.nextInt();
-            numbers.put(num, numbers.getOrDefault(num, 0) + 1);
+            long count = 0;
+            for (int j = 0; j < quantityOfItem; j++) {
+                var item = reader.nextInt();
+                table.put(item, table.getOrDefault(item, 0) + 1);
+            }
+
+            // Tổ hợp chọn 2 trong n giá trị là: n!/k!(n-k)! với k = 2
+            // rút gọn: n(n-1)/2
+            // Với n là tổng giá trị có trong mảng, k là số giá trị tổ hợp
+            // Ví dụ: chọn 2 trái bóng trong 3 quả bóng
+            // => số cách chọn là : 3!/2!(3-2)! = 3!/2! = 6/2 = 3 cách chọn
+            for (int each : table.keySet()) {
+                long n = table.get(each);
+                long total = n * (n - 1) / 2;
+                count += total;
+            }
+            stringBuilder.append(count).append("\n");
         }
-        int happiness = calculateHappiness(n, numbers);
-        System.out.println(happiness);
+        System.out.println(stringBuilder);
     }
 
     static public class InputReader {
