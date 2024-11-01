@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.List;
 
-// 45
+// 100 done
 public class EI2122Q1ADAM2 {
     static InputReader reader;
 
@@ -39,8 +39,8 @@ public class EI2122Q1ADAM2 {
 
     static int binarySearch(List<Integer> men, List<Integer> women, int pairs) {
         int left = 0;
-        int diff1 = men.get(men.size() - 1) - women.get(0);
-        int diff2 = women.get(women.size() - 1) - men.get(0);
+        int diff1 = Math.abs(men.get(men.size() - 1) - women.get(0));
+        int diff2 = Math.abs(women.get(women.size() - 1) - men.get(0));
         int right = Math.max(diff1, diff2);
 
         int result = right;
@@ -68,7 +68,7 @@ public class EI2122Q1ADAM2 {
                 if (pairsFormed == pairs) {
                     return true;
                 }
-            } else if (men.get(menIndex) > women.get(womenIndex)) {
+            } else if (men.get(menIndex) < women.get(womenIndex)) {
                 menIndex++;
             } else {
                 womenIndex++;
