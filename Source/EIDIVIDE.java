@@ -3,78 +3,54 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.InputMismatchException;
 
-// 11.11
+// 100 done
 public class EIDIVIDE {
     static InputReader reader;
-    static int from = 0;
-    static int to = 0;
-    static int maxHeight = 0;
-    static int countAll = 0;
-    static int numberOfFullGroups_1 = 0;
-    static boolean check1Left = false;
-    static boolean check1Right = false;
+    static long from = 0;
+    static long to = 0;
+    static long countAll = 0;
 
-    public static void countOne(int num, int height) {
+    // (L-2^x) / 2^(x+1) <= K <= (R-2^x) / 2^(x+1)
+    public static void countOne(long num, long height) {
+
+        long mod = num % 2;
+
+        double left = (double) (from - Math.pow(2, height)) / Math.pow(2, height + 1);
+        double right = (double) (to - Math.pow(2, height)) / Math.pow(2, height + 1);
+
+        long countK = (long) (Math.floor(right) - Math.ceil(left)) + 1L;
+
+        if (countK > 0) {
+            if (height == 0) {
+                countAll += countK;
+            } else {
+                countAll += countK * mod;
+            }
+        }
+
         if (height == 0) {
             return;
         }
-
-        int div = num / 2;
-        int mod = num % 2;
-        int countMiddle = 0;
-        if (mod != 0 || height == 1) {
-            int count = 0;
-            int position = 0;
-            for (int i = 1; i <= maxHeight - height; i++) {
-                if (i == 1) {
-                    position = (1 << height);
-                } else if (i == 2) {
-                    position = (1 << height) * 3;
-                } else {
-                    position = (1 << height) * (3 + (1 << i - 2));
-                }
-
-                if (from < position && position < to) {
-                    count += 1;
-                    countMiddle += 1;
-                } else if (from == position || to == position) {
-                    countAll += mod;
-                    if (height == 1) {
-                        countAll += div;
-                    }
-                } else if (from - 1 == position || to + 1 == position) {
-                    if (height == 1) {
-                        countAll += div;
-                    }
-                }
-            }
-            if (count != 0) {
-                countAll += count * mod;
-            }
-        }
-
-        if (height == 1) {
-            countAll += num * countMiddle;
-        }
-
         countOne(num / 2, height - 1);
     }
 
     public static void main(String[] args) throws IOException {
         reader = new InputReader(System.in);
 
-        int num = reader.nextInt();
-        from = reader.nextInt();
-        to = reader.nextInt();
+        long num = reader.nextLong();
+        from = reader.nextLong();
+        to = reader.nextLong();
 
-        maxHeight = (int) Math.ceil(Math.log(num) / Math.log(2));
-        numberOfFullGroups_1 = 0;
-        for (int i = from; i <= to - 2; i++) {
-            if ((i + 1) % 3 == 0) {
-                numberOfFullGroups_1++;
-            }
+        long maxHeight = (long) Math.floor(Math.log(num) / Math.log(2));
+
+        if ((1L << maxHeight) > num) {
+            maxHeight--;
         }
-        countOne(num, maxHeight - 1);
+
+        if (num != 0) {
+            countOne(num, maxHeight);
+        }
+
         System.out.print(countAll);
     }
 

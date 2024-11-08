@@ -1,73 +1,82 @@
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.InputMismatchException;
-import java.util.List;
 
-// 85
+// 69.70
 class  Main {
     static InputReader reader;
+    static long from = 0;
+    static long to = 0;
+    static long countAll = 0;
 
-    public static boolean canPermutate(Hashtable<Integer, Integer> tableA, Hashtable<Integer, Integer> tableB, int k) {
-        List<Integer> listA = new ArrayList<>(tableA.keySet());
-        List<Integer> listB = new ArrayList<>(tableB.keySet());
-        if (listA.isEmpty() && listB.isEmpty()) {
-            return true;
-        }
-        for (int i = 0; i < listA.size(); i++) {
-            for (int j = 0; j < listB.size(); j++) {
-                int each = listA.get(i);
-                int key = listB.get(j);
-                int different = Math.abs(each - key);
-                if (different <= k) {
-                    k -= different;
-                    int countA = tableA.get(each);
-                    int countB = tableB.get(key);
-                    tableA.put(each, countA - 1);
-                    tableB.put(key, countB - 1);
-                    if (tableA.get(each) == 0) {
-                        tableA.remove(each);
-                    }
-                    if (tableB.get(key) == 0) {
-                        tableB.remove(key);
-                    }
-                    return tableA.isEmpty() && tableB.isEmpty();
-                }
+    // (L-2^x) / 2^(x+1) <= K <= (R-2^x) / 2^(x+1)
+    public static void countOne(long num, long height) {
+
+        long mod = num % 2;
+
+        double left = (double) (from - Math.pow(2, height)) / Math.pow(2, height + 1);
+        double right = (double) (to - Math.pow(2, height)) / Math.pow(2, height + 1);
+
+        // if (left < 0) {
+        // left = Math.ceil(left);
+        // } else {
+        // left = Math.floor(left);
+        // }
+
+        // if (right > 0) {
+        // right = Math.ceil(left);
+        // } else {
+        // right = Math.floor(left);
+        // }
+
+        long countK = (long) (Math.floor(right) - Math.ceil(left)) + 1L;
+
+        if (countK > 0) {
+            if (height == 0) {
+                countAll += countK;
+            } else {
+                countAll += countK * mod;
             }
         }
-        return false;
+
+        // if (num == 451658381251L) {
+        // System.out.println("height: " + height);
+        // System.out.println("num: " + num);
+        // System.out.println("num%2: " + num % 2);
+        // System.out.println("left: " + left);
+        // System.out.println("(long) Math.ceil(left): " + (long) Math.floor(left));
+        // System.out.println("right: " + right);
+        // System.out.println("(long) (Math.floor(right): " + (long)
+        // (Math.ceil(right)));
+        // System.out.println("countK: " + countK);
+        // System.out.println("countAll: " + countAll);
+        // }
+
+        if (height == 0) {
+            return;
+        }
+        countOne(num / 2, height - 1);
     }
 
     public static void main(String[] args) throws IOException {
         reader = new InputReader(System.in);
-        int n = reader.nextInt();
-        int k = reader.nextInt();
-        Hashtable<Integer, Integer> tableA = new Hashtable<>();
-        Hashtable<Integer, Integer> tableB = new Hashtable<>();
-        for (int i = 0; i < n; i++) {
-            int num = reader.nextInt();
-            tableA.put(num, tableA.getOrDefault(num, 0) + 1);
+
+        long num = reader.nextLong();
+        from = reader.nextLong();
+        to = reader.nextLong();
+
+        long maxHeight = (long) Math.floor(Math.log(num) / Math.log(2));
+
+        if ((1L << maxHeight) > num) {
+            maxHeight--;
         }
 
-        for (int i = 0; i < n; i++) {
-            int num = reader.nextInt();
-            if (tableA.containsKey(num)) {
-                tableA.put(num, tableA.get(num) - 1);
-                if (tableA.get(num) == 0) {
-                    tableA.remove(num);
-                }
-            } else {
-                tableB.put(num, tableB.getOrDefault(num, 0) + 1);
-            }
+        if (num != 0) {
+            countOne(num, maxHeight);
         }
 
-        if (canPermutate(tableA, tableB, k)) {
-            System.out.println("YES");
-        } else {
-            System.out.println("NO");
-        }
+        System.out.print(countAll);
     }
 
     static public class InputReader {
