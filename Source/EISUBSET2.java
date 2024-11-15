@@ -2,7 +2,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.InputMismatchException;
 import java.util.List;
 
@@ -12,34 +11,36 @@ public class EISUBSET2 {
 
     public static void main(String[] args) throws IOException {
         reader = new InputReader(System.in);
-        StringBuilder sb = new StringBuilder();
         int n = reader.nextInt();
-        List<Integer> numbers = new ArrayList<>();
+        int k = reader.nextInt();
+
+        List<Integer> list = new ArrayList<>();
 
         for (int i = 0; i < n; i++) {
-            int num = reader.nextInt();
-            numbers.add(num);
+            int element = reader.nextInt();
+            list.add(element);
         }
 
-        Collections.reverse(numbers);
+        List<Integer> subsets = new ArrayList<>();
 
-        List<String> res = new ArrayList<>();
-        res.add(String.valueOf(numbers.get(0)));
+        for (int i = list.size() - 1; i >= 0; i--) {
+            subsets.add(list.get(i));
+            int subsetSize = subsets.size() - 1;
 
-        for (int i = 1; i < numbers.size(); i++) {
-            res.add(String.valueOf(numbers.get(i)));
-            var temp = res.size() - 1;
-            for (int j = 0; j < temp; j++) {
-                res.add(numbers.get(i) + " " + res.get(j));
+            for (int j = 0; j < subsetSize; j++) {
+                subsets.add(list.get(i) + subsets.get(j));
             }
         }
 
-        sb.append(res.size()).append("\n");
-        for (String string : res) {
-            sb.append(string).append("\n");
-        }
+        int count = 0;
 
-        System.out.println(sb);
+        for (var subset : subsets) {
+            if (subset == k) {
+                count++;
+            }
+        }
+        System.out.println(count);
+
     }
 
     static public class InputReader {
