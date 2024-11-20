@@ -3,80 +3,65 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.InputMismatchException;
 
-// 69.70
 class  Main {
     static InputReader reader;
-    static long from = 0;
-    static long to = 0;
-    static long countAll = 0;
-
-    // (L-2^x) / 2^(x+1) <= K <= (R-2^x) / 2^(x+1)
-    public static void countOne(long num, long height) {
-
-        long mod = num % 2;
-
-        double left = (double) (from - Math.pow(2, height)) / Math.pow(2, height + 1);
-        double right = (double) (to - Math.pow(2, height)) / Math.pow(2, height + 1);
-
-        // if (left < 0) {
-        // left = Math.ceil(left);
-        // } else {
-        // left = Math.floor(left);
-        // }
-
-        // if (right > 0) {
-        // right = Math.ceil(left);
-        // } else {
-        // right = Math.floor(left);
-        // }
-
-        long countK = (long) (Math.floor(right) - Math.ceil(left)) + 1L;
-
-        if (countK > 0) {
-            if (height == 0) {
-                countAll += countK;
-            } else {
-                countAll += countK * mod;
-            }
-        }
-
-        // if (num == 451658381251L) {
-        // System.out.println("height: " + height);
-        // System.out.println("num: " + num);
-        // System.out.println("num%2: " + num % 2);
-        // System.out.println("left: " + left);
-        // System.out.println("(long) Math.ceil(left): " + (long) Math.floor(left));
-        // System.out.println("right: " + right);
-        // System.out.println("(long) (Math.floor(right): " + (long)
-        // (Math.ceil(right)));
-        // System.out.println("countK: " + countK);
-        // System.out.println("countAll: " + countAll);
-        // }
-
-        if (height == 0) {
-            return;
-        }
-        countOne(num / 2, height - 1);
-    }
 
     public static void main(String[] args) throws IOException {
         reader = new InputReader(System.in);
 
-        long num = reader.nextLong();
-        from = reader.nextLong();
-        to = reader.nextLong();
+        int rows = reader.nextInt();
+        int cols = reader.nextInt();
 
-        long maxHeight = (long) Math.floor(Math.log(num) / Math.log(2));
+        int currentRow = 0;
+        int currentCol = 0;
+        int[][] matrix = new int[rows][cols];
 
-        if ((1L << maxHeight) > num) {
-            maxHeight--;
+        int max = Integer.MIN_VALUE;
+        int beforeMax = Integer.MIN_VALUE;
+
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                int num = reader.nextInt();
+                if (i == 0 && j == 0) {
+                    max = num;
+                }
+                matrix[i][j] = num;
+            }
         }
 
-        if (num != 0) {
-            countOne(num, maxHeight);
+        while (currentRow < rows - 1 || currentCol < cols - 1) {
+            beforeMax = max;
+            if (currentRow < rows - 1 && currentCol < cols - 1) {
+                int tempRight = max + matrix[currentRow][currentCol + 1];
+                int tempDown = max + matrix[currentRow + 1][currentCol];
+
+                if (tempRight > tempDown) {
+                    max = tempRight;
+                    currentCol++;
+                } else {
+                    max = tempDown;
+                    currentRow++;
+                }
+            } else if (currentRow == rows - 1) {
+                max += matrix[currentRow][currentCol + 1];
+                if (max < beforeMax) {
+                    currentRow--;
+                    max = beforeMax;
+                } else {
+                    currentCol++;
+                }
+            } else {
+                max += matrix[currentRow + 1][currentCol];
+                if (max < beforeMax) {
+                    currentCol--;
+                    max = beforeMax;
+                } else {
+                    currentRow++;
+                }
+            }
         }
 
-        System.out.print(countAll);
+        System.out.println(max);
     }
 
     static public class InputReader {

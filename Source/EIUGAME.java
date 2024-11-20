@@ -14,15 +14,54 @@ public class EIUGAME {
 
         int currentRow = 0;
         int currentCol = 0;
+        int[][] matrix = new int[rows][cols];
+
         int max = Integer.MIN_VALUE;
+        int beforeMax = Integer.MIN_VALUE;
+
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
                 int num = reader.nextInt();
-                // if()
+                if (i == 0 && j == 0) {
+                    max = num;
+                }
+                matrix[i][j] = num;
             }
-            System.out.println();
         }
 
+        while (currentRow < rows - 1 || currentCol < cols - 1) {
+            beforeMax = max;
+            if (currentRow < rows - 1 && currentCol < cols - 1) {
+                int tempRight = max + matrix[currentRow][currentCol + 1];
+                int tempDown = max + matrix[currentRow + 1][currentCol];
+
+                if (tempRight > tempDown) {
+                    max = tempRight;
+                    currentCol++;
+                } else {
+                    max = tempDown;
+                    currentRow++;
+                }
+            } else if (currentRow == rows - 1) {
+                max += matrix[currentRow][currentCol + 1];
+                if (max < beforeMax) {
+                    currentRow--;
+                    max = beforeMax;
+                } else {
+                    currentCol++;
+                }
+            } else {
+                max += matrix[currentRow + 1][currentCol];
+                if (max < beforeMax) {
+                    currentCol--;
+                    max = beforeMax;
+                } else {
+                    currentRow++;
+                }
+            }
+        }
+
+        System.out.println(max);
     }
 
     static public class InputReader {
