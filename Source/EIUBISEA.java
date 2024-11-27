@@ -1,8 +1,10 @@
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.InputMismatchException;
+import java.util.List;
 
 // 100 done
 public class EIUBISEA {
@@ -15,39 +17,28 @@ public class EIUBISEA {
         int n = reader.nextInt();
         int m = reader.nextInt();
 
-        int[] list = new int[n];
+        List<Double> list = new ArrayList<>(n);
 
         for (int i = 0; i < n; i++) {
-            int num = reader.nextInt();
-            list[i] = num;
+            double num = reader.nextDouble();
+            list.add(num);
         }
-        Arrays.sort(list);
+
+        Collections.sort(list);
         for (int i = 0; i < m; i++) {
-            int num = reader.nextInt();
-            int index = binarySearch(list, num);
+            double num = reader.nextDouble();
+            int index = Collections.binarySearch(list, num - 0.1);
+            index = ~index;
+            if (index == list.size()) {
+                index = -1;
+            } else if (Double.compare(list.get(index), num) != 0) {
+                index = -1;
+            }
+
             sb.append(index);
             sb.append(" ");
         }
         System.out.println(sb);
-    }
-
-    static int binarySearch(int[] list, int target) {
-        int left = 0;
-        int right = list.length - 1;
-        int index = -1;
-        while (left <= right) {
-            int mid = (left + right) / 2;
-            if (list[mid] == target) {
-                index = mid;
-                right = mid - 1;
-            } else if (list[mid] < target) {
-                left = mid + 1;
-            } else if (list[mid] > target) {
-                right = mid - 1;
-            } else {
-            }
-        }
-        return index;
     }
 
     static public class InputReader {

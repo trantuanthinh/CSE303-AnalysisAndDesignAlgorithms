@@ -9,19 +9,33 @@ public class LOGGING {
 
     public static void main(String[] args) throws IOException {
         reader = new InputReader(System.in);
-
         int n = reader.nextInt();
 
-        long treeSave = 0;
-        long treeCut = 0;
+        long list[] = new long[n];
         for (int i = 0; i < n; i++) {
             long num = reader.nextLong();
-            long temp = Math.max(treeSave + num, treeCut);
-
-            treeSave = treeCut;
-            treeCut = temp;
+            list[i] = num;
         }
+
+        long treeCut = countMaxTree(n, list);
         System.out.println(treeCut);
+    }
+
+    static long countMaxTree(int n, long[] list) {
+        if (n == 1) {
+            return Math.max(0, list[0]);
+        }
+
+        long dp[] = new long[n + 1];
+
+        dp[0] = 0; // No trees selected.
+        dp[1] = Math.max(0, list[0]); // Max money for the first tree.
+        dp[2] = Math.max(dp[1], list[1]); // Max money from first two trees.
+
+        for (int i = 3; i <= n; i++) {
+            dp[i] = Math.max(dp[i - 1], dp[i - 2] + list[i - 1]);
+        }
+        return dp[n];
     }
 
     static public class InputReader {

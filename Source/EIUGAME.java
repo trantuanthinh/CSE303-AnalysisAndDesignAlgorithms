@@ -1,67 +1,34 @@
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.InputMismatchException;
 
+// 100 done
 public class EIUGAME {
     static InputReader reader;
 
     public static void main(String[] args) throws IOException {
         reader = new InputReader(System.in);
 
-        int rows = reader.nextInt();
-        int cols = reader.nextInt();
+        int n = reader.nextInt();
+        int m = reader.nextInt();
 
-        int currentRow = 0;
-        int currentCol = 0;
-        int[][] matrix = new int[rows][cols];
+        long path[] = new long[m + 1];
 
-        int max = Integer.MIN_VALUE;
-        int beforeMax = Integer.MIN_VALUE;
+        Arrays.fill(path, Long.MIN_VALUE / 2);
 
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                int num = reader.nextInt();
-                if (i == 0 && j == 0) {
-                    max = num;
-                }
-                matrix[i][j] = num;
+        path[1] = 0;
+
+        for (int row = 1; row <= n; row++) {
+            long num = reader.nextLong();
+            path[1] += num;
+            for (int col = 2; col <= m; col++) {
+                long temp = reader.nextLong();
+                path[col] = Math.max(path[col], path[col - 1]) + temp;
             }
         }
-
-        while (currentRow < rows - 1 || currentCol < cols - 1) {
-            beforeMax = max;
-            if (currentRow < rows - 1 && currentCol < cols - 1) {
-                int tempRight = max + matrix[currentRow][currentCol + 1];
-                int tempDown = max + matrix[currentRow + 1][currentCol];
-
-                if (tempRight > tempDown) {
-                    max = tempRight;
-                    currentCol++;
-                } else {
-                    max = tempDown;
-                    currentRow++;
-                }
-            } else if (currentRow == rows - 1) {
-                max += matrix[currentRow][currentCol + 1];
-                if (max < beforeMax) {
-                    currentRow--;
-                    max = beforeMax;
-                } else {
-                    currentCol++;
-                }
-            } else {
-                max += matrix[currentRow + 1][currentCol];
-                if (max < beforeMax) {
-                    currentCol--;
-                    max = beforeMax;
-                } else {
-                    currentRow++;
-                }
-            }
-        }
-
-        System.out.println(max);
+        System.out.println(path[m]);
     }
 
     static public class InputReader {

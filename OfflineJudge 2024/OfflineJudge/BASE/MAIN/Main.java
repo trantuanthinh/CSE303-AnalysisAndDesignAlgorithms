@@ -8,60 +8,39 @@ class  Main {
 
     public static void main(String[] args) throws IOException {
         reader = new InputReader(System.in);
+        int n = reader.nextInt();
 
-        int rows = reader.nextInt();
-        int cols = reader.nextInt();
+        long list[] = new long[n];
 
-        int currentRow = 0;
-        int currentCol = 0;
-        int[][] matrix = new int[rows][cols];
-
-        int max = Integer.MIN_VALUE;
-        int beforeMax = Integer.MIN_VALUE;
-
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                int num = reader.nextInt();
-                if (i == 0 && j == 0) {
-                    max = num;
-                }
-                matrix[i][j] = num;
-            }
+        for (int i = 0; i < n; i++) {
+            long num = reader.nextLong();
+            list[i] = num;
         }
 
-        while (currentRow < rows - 1 || currentCol < cols - 1) {
-            beforeMax = max;
-            if (currentRow < rows - 1 && currentCol < cols - 1) {
-                int tempRight = max + matrix[currentRow][currentCol + 1];
-                int tempDown = max + matrix[currentRow + 1][currentCol];
+        long treeCut = countMaxTree(n, list);
 
-                if (tempRight > tempDown) {
-                    max = tempRight;
-                    currentCol++;
-                } else {
-                    max = tempDown;
-                    currentRow++;
-                }
-            } else if (currentRow == rows - 1) {
-                max += matrix[currentRow][currentCol + 1];
-                if (max < beforeMax) {
-                    currentRow--;
-                    max = beforeMax;
-                } else {
-                    currentCol++;
-                }
-            } else {
-                max += matrix[currentRow + 1][currentCol];
-                if (max < beforeMax) {
-                    currentCol--;
-                    max = beforeMax;
-                } else {
-                    currentRow++;
-                }
-            }
+        System.out.println(treeCut);
+    }
+
+    static long countMaxTree(int n, long[] list) {
+        if (n == 1) {
+            return Math.max(0, list[0]);
+        }
+        if (n == 2) {
+            return Math.max(0, Math.max(list[0], list[1]));
         }
 
-        System.out.println(max);
+        long[] dp = new long[n + 1];
+        dp[0] = 0; // No trees selected.
+        dp[1] = Math.max(0, list[0]); // Max money for the first tree.
+        dp[2] = Math.max(dp[1], list[1]); // Max money from first two trees.
+        dp[3] = Math.max(dp[2], list[2]); // Considering up to the third tree.
+
+        for (int i = 4; i <= n; i++) {
+            dp[i] = Math.max(Math.max(dp[i - 1], dp[i - 2]), (dp[i - 3] + list[i - 1]));
+        }
+
+        return dp[n];
     }
 
     static public class InputReader {
