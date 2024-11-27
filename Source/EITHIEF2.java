@@ -1,60 +1,30 @@
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.InputMismatchException;
 
-public class LOGGING3 {
+public class EITHIEF2 {
     static InputReader reader;
-    static long maxValue = 0;
-    static long way = 0;
-    static final long MOD = (long) Math.pow(10, 9) + 7;
 
+    // 100 done
     public static void main(String[] args) throws IOException {
         reader = new InputReader(System.in);
         int n = reader.nextInt();
+        int p = reader.nextInt();
 
-        long list[] = new long[n];
+        long[] dp = new long[p + 1];
+        Arrays.fill(dp, 0);
+
         for (int i = 0; i < n; i++) {
-            long num = reader.nextLong();
-            list[i] = num;
-        }
-
-        countMaxTree(n, list);
-        System.out.println(way + " " + maxValue);
-    }
-
-    static void countMaxTree(int n, long[] list) {
-        if (n == 1) {
-            maxValue = Math.max(0, list[0]);
-            way = 1;
-            return;
-        }
-
-        long dp[] = new long[n + 1];
-        long ways[] = new long[n + 1];
-
-        dp[0] = 0; // No trees selected.
-        dp[1] = Math.max(0, list[0]); // Max money for the first tree.
-        ways[1] = 1;
-        dp[2] = Math.max(dp[1], list[1]); // Max money from first two trees.
-        ways[2] = 1;
-
-        for (int i = 3; i <= n; i++) {
-            long temp1 = dp[i - 1];
-            long temp2 = dp[i - 2] + list[i - 1];
-            if (temp1 > temp2) {
-                dp[i] = temp1;
-                ways[i] = ways[i - 1];
-            } else if (temp1 > temp2) {
-                dp[i] = temp2;
-                ways[i] = ways[i - 2];
-            } else {
-                dp[i] = temp1;
-                ways[i] = ways[i - 1] + ways[i - 2];
+            int weight = reader.nextInt();
+            long value = reader.nextLong();
+            for (int j = p; j >= weight; j--) {
+                dp[j] = Math.max(dp[j], dp[j - weight] + value);
             }
         }
-        maxValue = dp[n];
-        way = ways[n] % MOD;
+
+        System.out.println(dp[p]);
     }
 
     static public class InputReader {
