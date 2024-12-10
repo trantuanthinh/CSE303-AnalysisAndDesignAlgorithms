@@ -1,41 +1,33 @@
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.InputMismatchException;
 
-// 100 done
-public class LOGGING3 {
+public class EIBORE {
     static InputReader reader;
 
     public static void main(String[] args) throws IOException {
         reader = new InputReader(System.in);
+
         int n = reader.nextInt();
+        int m = reader.nextInt();
 
-        long values[] = new long[n + 1];
-        long dp[] = new long[n + 1];
-        values[0] = 0;
-        values[1] = Math.max(reader.nextInt(), values[0]);
+        long path[] = new long[m + 1];
 
-        dp[0] = 1;
-        dp[1] = 1;
+        Arrays.fill(path, Long.MIN_VALUE / 2);
 
-        for (int i = 2; i < n; i++) {
+        path[1] = 0;
+
+        for (int row = 1; row <= n; row++) {
             long num = reader.nextLong();
-
-            values[i] = Math.max(values[i - 2] + num, values[i - 1]);
-            if (values[i - 2] + num == values[i - 1]) {
-                dp[i] = dp[i - 1] + dp[i - 2];
-                dp[i] = dp[i] % (1000000007L);
-
-            } else if (values[i - 2] + num > values[i - 1]) {
-                dp[i] = dp[i - 2];
-
-            } else if (values[i - 2] + num < values[i - 1]) {
-                dp[i] = dp[i - 1];
+            path[1] += num;
+            for (int col = 2; col <= m; col++) {
+                long temp = reader.nextLong();
+                path[col] = Math.max(path[col], path[col - 1]) + temp;
             }
         }
-
-        System.out.println(values[n] + " " + dp[n]);
+        System.out.println(path[m]);
     }
 
     static public class InputReader {

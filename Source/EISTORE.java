@@ -1,41 +1,32 @@
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.InputMismatchException;
 
-// 100 done
-public class LOGGING3 {
+public class EISTORE {
     static InputReader reader;
 
     public static void main(String[] args) throws IOException {
         reader = new InputReader(System.in);
+
         int n = reader.nextInt();
+        int m = reader.nextInt();
+        int[] dp = new int[m + 1];
+        Arrays.fill(dp, Integer.MAX_VALUE);
 
-        long values[] = new long[n + 1];
-        long dp[] = new long[n + 1];
-        values[0] = 0;
-        values[1] = Math.max(reader.nextInt(), values[0]);
+        for (int i = 1; i <= n; i++) {
+            int num = reader.nextInt();
+            dp[num] = Math.max(1, dp[num]);
 
-        dp[0] = 1;
-        dp[1] = 1;
-
-        for (int i = 2; i < n; i++) {
-            long num = reader.nextLong();
-
-            values[i] = Math.max(values[i - 2] + num, values[i - 1]);
-            if (values[i - 2] + num == values[i - 1]) {
-                dp[i] = dp[i - 1] + dp[i - 2];
-                dp[i] = dp[i] % (1000000007L);
-
-            } else if (values[i - 2] + num > values[i - 1]) {
-                dp[i] = dp[i - 2];
-
-            } else if (values[i - 2] + num < values[i - 1]) {
-                dp[i] = dp[i - 1];
+            for (int j = num; j <= m; j++) {
+                if (dp[j - num] > 0) {
+                    dp[j] = Math.min(dp[j], dp[j - num] + dp[num]);
+                }
             }
         }
 
-        System.out.println(values[n] + " " + dp[n]);
+        System.out.println(dp[n]);
     }
 
     static public class InputReader {

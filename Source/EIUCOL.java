@@ -4,38 +4,26 @@ import java.io.InputStream;
 import java.util.InputMismatchException;
 
 // 100 done
-public class LOGGING3 {
+public class EIUCOL {
     static InputReader reader;
 
     public static void main(String[] args) throws IOException {
         reader = new InputReader(System.in);
-        int n = reader.nextInt();
+        int x = reader.nextInt();
+        int[] dp = new int[x + 1];
 
-        long values[] = new long[n + 1];
-        long dp[] = new long[n + 1];
-        values[0] = 0;
-        values[1] = Math.max(reader.nextInt(), values[0]);
+        for (int i = 0; i < 3; i++) {
+            int num = reader.nextInt();
+            dp[num] = Math.max(1, dp[num]);
 
-        dp[0] = 1;
-        dp[1] = 1;
-
-        for (int i = 2; i < n; i++) {
-            long num = reader.nextLong();
-
-            values[i] = Math.max(values[i - 2] + num, values[i - 1]);
-            if (values[i - 2] + num == values[i - 1]) {
-                dp[i] = dp[i - 1] + dp[i - 2];
-                dp[i] = dp[i] % (1000000007L);
-
-            } else if (values[i - 2] + num > values[i - 1]) {
-                dp[i] = dp[i - 2];
-
-            } else if (values[i - 2] + num < values[i - 1]) {
-                dp[i] = dp[i - 1];
+            for (int j = num; j <= x; j++) {
+                if (dp[j - num] > 0) {
+                    dp[j] = Math.max(dp[j], dp[j - num] + dp[num]);
+                }
             }
         }
 
-        System.out.println(values[n] + " " + dp[n]);
+        System.out.println(dp[x]);
     }
 
     static public class InputReader {
