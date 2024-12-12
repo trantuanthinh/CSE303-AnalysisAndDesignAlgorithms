@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.util.Arrays;
 import java.util.InputMismatchException;
 
+// 100 done
 public class EISTORE {
     static InputReader reader;
 
@@ -17,16 +18,19 @@ public class EISTORE {
 
         for (int i = 1; i <= n; i++) {
             int num = reader.nextInt();
-            dp[num] = Math.max(1, dp[num]);
+            if (num > m) {
+                continue;
+            }
+            dp[num] = 1;
 
             for (int j = num; j <= m; j++) {
-                if (dp[j - num] > 0) {
+                if (dp[j - num] < Integer.MAX_VALUE) {
                     dp[j] = Math.min(dp[j], dp[j - num] + dp[num]);
                 }
             }
         }
 
-        System.out.println(dp[n]);
+        System.out.println(dp[m]);
     }
 
     static public class InputReader {
