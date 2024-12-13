@@ -1,73 +1,68 @@
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
 import java.util.InputMismatchException;
 
 // 100 done
-public class EIAPPLEBOX {
+public class EIUMERSORT {
     static InputReader reader;
 
     public static void main(String[] args) throws IOException {
         reader = new InputReader(System.in);
         StringBuilder sb = new StringBuilder();
 
-        int testcases = reader.nextInt();
+        int n = reader.nextInt();
 
-        for (int i = 0; i < testcases; i++) {
-            int n = reader.nextInt();
-            long a = reader.nextLong();
-            long p = reader.nextLong();
-
-            int[] arr = new int[n];
-            arr[0] = (int) ((a * a) % p);
-            for (int j = 1; j < n; j++) {
-                arr[j] = (int) ((arr[j - 1] * a) % p);
-            }
-            long inversions = countInversions(arr, 0, n - 1);
-            sb.append(inversions).append("\n");
+        int[] arr = new int[n];
+        for (int i = 0; i < n; i++) {
+            arr[i] = reader.nextInt();
         }
+        mergeSort(arr, 0, arr.length - 1);
 
+        for (int num : arr) {
+            sb.append(num).append("\n");
+        }
         System.out.println(sb);
     }
 
-    private static long countInversions(int[] arr, int left, int right) {
-        if (left >= right)
-            return 0;
+    static void mergeSort(int[] arr, int start, int end) {
+        if (start < end) {
+            var middle = (start + end) / 2;
 
-        int mid = left + (right - left) / 2;
-        long inversions = 0;
-
-        inversions += countInversions(arr, left, mid);
-        inversions += countInversions(arr, mid + 1, right);
-
-        inversions += mergeAndCount(arr, left, mid, right);
-
-        return inversions;
+            mergeSort(arr, start, middle);
+            mergeSort(arr, middle + 1, end);
+            merge(arr, start, middle, end);
+        }
     }
 
-    private static long mergeAndCount(int[] arr, int left, int mid, int right) {
-        int[] leftArr = Arrays.copyOfRange(arr, left, mid + 1);
-        int[] rightArr = Arrays.copyOfRange(arr, mid + 1, right + 1);
+    static void merge(int[] arr, int start, int middle, int end) {
 
-        int i = 0, j = 0, k = left;
-        long inversions = 0;
+        var n1 = middle - start + 1;
+        var n2 = end - middle;
 
-        while (i < leftArr.length && j < rightArr.length) {
-            if (leftArr[i] <= rightArr[j]) {
-                arr[k++] = leftArr[i++];
-            } else {
-                arr[k++] = rightArr[j++];
-                inversions += (leftArr.length - i);
-            }
+        var L = new int[n1];
+        var R = new int[n2];
+
+        for (var i = 0; i < n1; i++) {
+            L[i] = arr[start + i];
         }
 
-        while (i < leftArr.length)
-            arr[k++] = leftArr[i++];
-        while (j < rightArr.length)
-            arr[k++] = rightArr[j++];
+        for (var j = 0; j < n2; j++) {
+            R[j] = arr[middle + j + 1];
+        }
 
-        return inversions;
+        var i = 0;
+        var j = 0;
+        var k = start;
+        while (i < n1 || j < n2) {
+
+            if (i < n1 && j < n2 && L[i] <= R[j] || j == n2) {
+                arr[k++] = L[i++];
+
+            } else {
+                arr[k++] = R[j++];
+            }
+        }
     }
 
     static public class InputReader {

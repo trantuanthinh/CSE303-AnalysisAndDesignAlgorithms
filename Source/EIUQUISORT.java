@@ -1,73 +1,77 @@
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
 import java.util.InputMismatchException;
+import java.util.Random;
 
 // 100 done
-public class EIAPPLEBOX {
+public class EIUQUISORT {
     static InputReader reader;
 
     public static void main(String[] args) throws IOException {
         reader = new InputReader(System.in);
         StringBuilder sb = new StringBuilder();
 
-        int testcases = reader.nextInt();
+        int n = reader.nextInt();
 
-        for (int i = 0; i < testcases; i++) {
-            int n = reader.nextInt();
-            long a = reader.nextLong();
-            long p = reader.nextLong();
-
-            int[] arr = new int[n];
-            arr[0] = (int) ((a * a) % p);
-            for (int j = 1; j < n; j++) {
-                arr[j] = (int) ((arr[j - 1] * a) % p);
-            }
-            long inversions = countInversions(arr, 0, n - 1);
-            sb.append(inversions).append("\n");
+        long[] arr = new long[n];
+        for (int i = 0; i < n; i++) {
+            arr[i] = reader.nextLong();
         }
 
+        randomElement(arr);
+        quickSort(arr, 0, n);
+
+        for (long num : arr) {
+            sb.append(num).append("\n");
+        }
         System.out.println(sb);
     }
 
-    private static long countInversions(int[] arr, int left, int right) {
-        if (left >= right)
-            return 0;
+    private static void quickSort(long[] arr, int left, int right) {
+        if (left < right) {
+            int[] newarr = partition(arr, left, right);
 
-        int mid = left + (right - left) / 2;
-        long inversions = 0;
-
-        inversions += countInversions(arr, left, mid);
-        inversions += countInversions(arr, mid + 1, right);
-
-        inversions += mergeAndCount(arr, left, mid, right);
-
-        return inversions;
+            quickSort(arr, left, newarr[0] - 1);
+            quickSort(arr, newarr[1] + 1, right);
+        }
     }
 
-    private static long mergeAndCount(int[] arr, int left, int mid, int right) {
-        int[] leftArr = Arrays.copyOfRange(arr, left, mid + 1);
-        int[] rightArr = Arrays.copyOfRange(arr, mid + 1, right + 1);
+    private static int[] partition(long[] arr, int left, int right) {
+        int i = left + 1;
+        int lowest = left;
+        int highest = right == arr.length ? right - 1 : right;
+        long pivot = arr[left];
 
-        int i = 0, j = 0, k = left;
-        long inversions = 0;
-
-        while (i < leftArr.length && j < rightArr.length) {
-            if (leftArr[i] <= rightArr[j]) {
-                arr[k++] = leftArr[i++];
+        while (i <= highest) {
+            if (pivot > arr[i]) {
+                swap(arr, lowest, i);
+                i++;
+                lowest++;
+            } else if (pivot < arr[i]) {
+                swap(arr, highest, i);
+                highest--;
             } else {
-                arr[k++] = rightArr[j++];
-                inversions += (leftArr.length - i);
+                i++;
             }
         }
+        return new int[] { lowest, highest };
+    }
 
-        while (i < leftArr.length)
-            arr[k++] = leftArr[i++];
-        while (j < rightArr.length)
-            arr[k++] = rightArr[j++];
+    private static void swap(long[] arr, int first, int last) {
+        var t = arr[first];
+        arr[first] = arr[last];
+        arr[last] = t;
+    }
 
-        return inversions;
+    private static void randomElement(long[] arr) {
+        Random rd = new Random();
+
+        for (int i = arr.length - 1; i > 0; i--) {
+            int index = rd.nextInt(i + 1);
+
+            swap(arr, i, index);
+        }
     }
 
     static public class InputReader {

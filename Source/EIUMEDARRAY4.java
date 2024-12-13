@@ -1,11 +1,10 @@
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
 import java.util.InputMismatchException;
 
 // 100 done
-public class EIAPPLEBOX {
+public class EIUMEDARRAY4 {
     static InputReader reader;
 
     public static void main(String[] args) throws IOException {
@@ -18,56 +17,50 @@ public class EIAPPLEBOX {
             int n = reader.nextInt();
             long a = reader.nextLong();
             long p = reader.nextLong();
+            int k = reader.nextInt();
 
-            int[] arr = new int[n];
-            arr[0] = (int) ((a * a) % p);
+            long[] arr = new long[n];
+            arr[0] = ((a * a) % p);
             for (int j = 1; j < n; j++) {
-                arr[j] = (int) ((arr[j - 1] * a) % p);
+                arr[j] = ((arr[j - 1] * a) % p);
             }
-            long inversions = countInversions(arr, 0, n - 1);
-            sb.append(inversions).append("\n");
+            long sort = quickSort(arr, 0, n - 1, k);
+            sb.append(sort).append("\n");
         }
 
         System.out.println(sb);
     }
 
-    private static long countInversions(int[] arr, int left, int right) {
-        if (left >= right)
-            return 0;
+    private static long quickSort(long[] arr, int low, int high, int k) {
+        int pivot = partition(arr, low, high);
 
-        int mid = left + (right - left) / 2;
-        long inversions = 0;
-
-        inversions += countInversions(arr, left, mid);
-        inversions += countInversions(arr, mid + 1, right);
-
-        inversions += mergeAndCount(arr, left, mid, right);
-
-        return inversions;
+        if (pivot == k - 1) {
+            return arr[pivot];
+        } else if (pivot > k - 1) {
+            return quickSort(arr, low, pivot - 1, k);
+        } else {
+            return quickSort(arr, pivot + 1, high, k);
+        }
     }
 
-    private static long mergeAndCount(int[] arr, int left, int mid, int right) {
-        int[] leftArr = Arrays.copyOfRange(arr, left, mid + 1);
-        int[] rightArr = Arrays.copyOfRange(arr, mid + 1, right + 1);
+    private static int partition(long[] arr, int low, int high) {
+        long pivot = arr[high];
+        int i = low - 1;
 
-        int i = 0, j = 0, k = left;
-        long inversions = 0;
-
-        while (i < leftArr.length && j < rightArr.length) {
-            if (leftArr[i] <= rightArr[j]) {
-                arr[k++] = leftArr[i++];
-            } else {
-                arr[k++] = rightArr[j++];
-                inversions += (leftArr.length - i);
+        for (int j = low; j < high; j++) {
+            if (arr[j] < pivot) {
+                i++;
+                long temp = arr[i];
+                arr[i] = arr[j];
+                arr[j] = temp;
             }
         }
 
-        while (i < leftArr.length)
-            arr[k++] = leftArr[i++];
-        while (j < rightArr.length)
-            arr[k++] = rightArr[j++];
+        long temp = arr[i + 1];
+        arr[i + 1] = arr[high];
+        arr[high] = temp;
 
-        return inversions;
+        return i + 1;
     }
 
     static public class InputReader {
