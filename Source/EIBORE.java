@@ -1,9 +1,9 @@
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
 import java.util.InputMismatchException;
 
+// 100 done
 public class EIBORE {
     static InputReader reader;
 
@@ -11,23 +11,28 @@ public class EIBORE {
         reader = new InputReader(System.in);
 
         int n = reader.nextInt();
-        int m = reader.nextInt();
+        int[] nums = new int[n];
 
-        long path[] = new long[m + 1];
-
-        Arrays.fill(path, Long.MIN_VALUE / 2);
-
-        path[1] = 0;
-
-        for (int row = 1; row <= n; row++) {
-            long num = reader.nextLong();
-            path[1] += num;
-            for (int col = 2; col <= m; col++) {
-                long temp = reader.nextLong();
-                path[col] = Math.max(path[col], path[col - 1]) + temp;
-            }
+        int maxNum = 0;
+        for (int i = 0; i < n; i++) {
+            nums[i] = reader.nextInt();
+            maxNum = Math.max(maxNum, nums[i]);
         }
-        System.out.println(path[m]);
+
+        int[] count = new int[maxNum + 1];
+        for (int num : nums) {
+            count[num]++;
+        }
+
+        int[] dp = new int[maxNum + 1];
+        dp[0] = 0;
+        dp[1] = count[1];
+
+        for (int i = 2; i <= maxNum; i++) {
+            dp[i] = Math.max(dp[i - 1], dp[i - 2] + i * count[i]);
+        }
+
+        System.out.println(dp[maxNum]);
     }
 
     static public class InputReader {
